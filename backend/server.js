@@ -39,6 +39,12 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', database: 'nedb', timestamp: new Date().toISOString() });
 });
 
+const frontendBuild = path.join(__dirname, '..', 'frontend', 'dist');
+app.use(express.static(frontendBuild));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendBuild, 'index.html'));
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!', error: err.message });
