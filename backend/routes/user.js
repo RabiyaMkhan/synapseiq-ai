@@ -101,4 +101,16 @@ router.get('/upload-history', auth, async (req, res) => {
   }
 });
 
+router.delete('/account', auth, async (req, res) => {
+  try {
+    await files.remove({ user: req.user._id }, { multi: true });
+    await reports.remove({ user: req.user._id }, { multi: true });
+    await chats.remove({ user: req.user._id }, { multi: true });
+    await users.remove({ _id: req.user._id });
+    res.json({ message: 'Account deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to delete account', error: err.message });
+  }
+});
+
 module.exports = router;
