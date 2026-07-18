@@ -3,7 +3,7 @@ services:
     name: synapseiq-ai
     runtime: node
     region: oregon
-    buildCommand: cd frontend && npm install && npm run build && cd ../backend && npm install
+    buildCommand: cd frontend && npm install && npm run build && cd ../backend && npm install --ignore-scripts
     startCommand: cd backend && node server.js
     envVars:
       - key: JWT_SECRET
