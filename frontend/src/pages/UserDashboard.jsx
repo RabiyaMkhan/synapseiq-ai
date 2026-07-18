@@ -147,9 +147,16 @@ export default function UserDashboard() {
     setConfirmPassword('')
   }
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (!window.confirm('Are you absolutely sure? This action cannot be undone.')) return
-    toast('Account deletion is not yet implemented', { icon: '⚠️' })
+    try {
+      await api.delete('/user/account')
+      toast.success('Account deleted')
+      localStorage.removeItem('token')
+      window.location.href = '/'
+    } catch {
+      toast.error('Failed to delete account')
+    }
   }
 
   const handleDeleteFile = async (fileId) => {
