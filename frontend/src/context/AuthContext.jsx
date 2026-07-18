@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import axios from 'axios'
 import toast from 'react-hot-toast'
+import api from '../utils/api'
 
 const AuthContext = createContext()
 
@@ -11,7 +11,6 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
       fetchUser()
     } else {
       setLoading(false)
@@ -20,21 +19,19 @@ export function AuthProvider({ children }) {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get('/api/auth/me')
+      const { data } = await api.get('/auth/me')
       setUser(data.user || data)
     } catch {
       localStorage.removeItem('token')
       setToken(null)
-      delete axios.defaults.headers.common['Authorization']
     } finally {
       setLoading(false)
     }
   }
 
   const login = async (email, password) => {
-    const { data } = await axios.post('/api/auth/login', { email, password })
+    const { data } = await api.post('/auth/login', { email, password })
     localStorage.setItem('token', data.token)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
     setToken(data.token)
     setUser(data.user)
     toast.success('Welcome back!')
@@ -42,9 +39,8 @@ export function AuthProvider({ children }) {
   }
 
   const register = async (name, email, password) => {
-    const { data } = await axios.post('/api/auth/register', { name, email, password })
+    const { data } = await api.post('/auth/register', { name, email, password })
     localStorage.setItem('token', data.token)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
     setToken(data.token)
     setUser(data.user)
     toast.success('Account created successfully!')
@@ -55,7 +51,6 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('token')
     setToken(null)
     setUser(null)
-    delete axios.defaults.headers.common['Authorization']
     toast.success('Logged out')
   }
 
