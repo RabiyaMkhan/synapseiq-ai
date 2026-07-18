@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: synapseiq-ai
+    runtime: node
+    region: oregon
+    buildCommand: cd frontend && npm install && npm run build && cd ../backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: JWT_SECRET
+        value: synapseiq_ai_super_secret_key_2024
